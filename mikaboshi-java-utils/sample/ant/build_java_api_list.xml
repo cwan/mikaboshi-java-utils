@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+	java_api_listカスタムタスクのサンプル
+-->
+
+<project default="by_no_classpath" basedir="../">
+	
+	<property name="output.dir" value="${basedir}/ant/output/java_api_list" />
+
+	<path id="execute.classpath">
+		<fileset dir="${basedir}/lib">
+			<include name="*.jar" />
+		</fileset>
+		<pathelement path="${basedir}/conf" />
+	</path>
+
+	<taskdef resource="net/mikaboshi/ant/tasks.properties"
+		classpathref="execute.classpath" />
+
+	<!-- クラスパスを指定しない -->
+	<target name="by_no_classpath">
+		<java_api_list
+			classNameInclude="^org\.apache\.tools\."
+			classNameExclude="^org\.apache\.tools\.ant\."/>
+	</target>
+
+	<!-- classpathref属性でクラスパスを指定する -->
+	<target name="by_classpathref">
+		<java_api_list
+			classpathref="execute.classpath"
+			classNameInclude="^net\.mikaboshi\."/>
+	</target>
+
+	<!-- ネストされたclasspath要素でクラスパスを指定する -->
+	<target name="by_nest_classpath">
+		<java_api_list
+				classNameInclude="^net\.mikaboshi\.">
+			<classpath>
+				<fileset dir="${basedir}/lib">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+		</java_api_list>
+	</target>
+	
+	<!-- ファイルに出力する -->
+	<target name="output_file">
+		<java_api_list
+			classpathref="execute.classpath"
+			classNameInclude="^net\.mikaboshi\."
+			innerClass="true"
+			output="${output.dir}/output_file.csv"/>
+	</target>
+	
+	<!-- 全てのメソッドと定数を出力する -->
+	<target name="all_methods_and_constants">
+		<java_api_list
+			classpathref="execute.classpath"
+			classNameInclude="^net\.mikaboshi\."
+			innerClass="false"
+			publicMethod="true"
+			protectedMethod="true"
+			packagePrivateMethod="true"
+			privateMethod="true"
+			publicField="true"
+			output="${output.dir}/all_methods_and_constants.csv"/>
+	</target>
+	
+	<!-- 区切り文字を指定する（タブを文字参照で指定） -->
+	<target name="set_delimiter">
+		<java_api_list
+			delimiter="&#x09;"
+			output="${output.dir}/set_delimiter.tsv"
+			charset="UTF-8"
+			classpathref="execute.classpath"
+			classNameInclude="^net\.mikaboshi\."/>
+	</target>
+</project>

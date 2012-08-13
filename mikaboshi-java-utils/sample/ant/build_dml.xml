@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+	dmlカスタムタスクのサンプル
+-->
+	
+<project default="test1" basedir="../">
+
+	<path id="execute.classpath">
+		<fileset dir="${basedir}/lib">
+			<include name="*.jar" />
+		</fileset>
+		<pathelement path="${basedir}/conf" />
+	</path>
+
+	<taskdef resource="net/mikaboshi/ant/tasks.properties"
+		classpathref="execute.classpath" />
+	
+	<property file="${basedir}/conf/jdbc.properties" />
+	
+	<property name="data.dir" value="${basedir}/ant/data" />
+		
+	<target name="test1" description="ファイル1つ指定">
+		<dml
+			file="${data.dir}/DmlExecutorSample3.sql"
+			driver="${jdbc.driver}"
+			url="${jdbc.url}"
+			userid="${jdbc.userid}"
+			password="${jdbc.password}"
+			classpathref="execute.classpath" />
+	</target>
+
+	<target name="test2" description="filesetで指定">
+		<dml
+			driver="${jdbc.driver}"
+			url="${jdbc.url}"
+			userid="${jdbc.userid}"
+			password="${jdbc.password}"
+			autocommit="false"
+			haltonerror="false"
+			classpathref="execute.classpath">
+			
+			<fileset dir="${data.dir}">
+			    <include name="**/*.sql"/>
+				<exclude name="prepare_test_table.sql"/>
+			</fileset>
+
+		</dml>
+	</target>
+
+	<target name="test3" description="velocity指定">
+		<dml
+			driver="${jdbc.driver}"
+			url="${jdbc.url}"
+			userid="${jdbc.userid}"
+			password="${jdbc.password}"
+			file="${data.dir}/VelocitySample1.vm"
+			velocity="true"
+			velocityProperties="${basedir}/conf/velocity.properties"
+			classpathref="execute.classpath" />
+	</target>
+	
+	<target name="test4" description="velocityパラメータ指定、一時ファイルを削除しない">
+		<dml
+			driver="${jdbc.driver}"
+			url="${jdbc.url}"
+			userid="${jdbc.userid}"
+			password="${jdbc.password}"
+			file="${data.dir}/VelocitySample2.vm"
+			velocity="true"
+			velocityProperties="${basedir}/conf/velocity.properties"
+			deleteTempFile="false"
+			classpathref="execute.classpath">
+		
+			<parameter name="ROWNUM" value="234" type="integer" />
+			<parameter name="TIMESTAMP" value="yyyy/MM/dd|HH:mm:ss" type="date" />
+		</dml>
+	</target>
+</project>

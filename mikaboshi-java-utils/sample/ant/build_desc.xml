@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+	print_descカスタムタスクのサンプル
+-->
+
+<project default="explain" basedir="../">
+
+	<path id="execute.classpath">
+		<fileset dir="${basedir}/lib">
+			<include name="*.jar" />
+		</fileset>
+		<pathelement path="${basedir}/conf" />
+	</path>
+
+	<taskdef resource="net/mikaboshi/ant/tasks.properties"
+		classpathref="execute.classpath" />
+
+	<target name="explain">
+		<print_desc order="target2,target1"/>
+	</target>
+
+	<target name="target1" description="target1のdescription">
+	</target>
+
+	<target name="target2" description="target2のdescription">
+	</target>
+</project>

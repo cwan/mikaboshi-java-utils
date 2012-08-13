@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+	xls2dbカスタムタスクのサンプル
+-->
+
+<project default="test1" basedir="../">
+
+	<path id="execute.classpath">
+		<fileset dir="${basedir}/lib">
+			<include name="*.jar" />
+		</fileset>
+		<pathelement path="${basedir}/conf" />
+	</path>
+
+	<taskdef resource="net/mikaboshi/ant/tasks.properties"
+		classpathref="execute.classpath" />
+	
+	<property file="${basedir}/conf/jdbc.properties" />
+	
+	<property name="data.dir" value="${basedir}/ant/data" />
+	
+	<target name="prepare"
+			description="テストデータを準備する">
+		
+		<dml
+			file="${data.dir}/prepare_test_table.sql"
+			driver="${jdbc.driver}"
+			url="${jdbc.url}"
+			userid="${jdbc.userid}"
+			password="${jdbc.password}"
+			haltonerror="true"
+			classpathref="execute.classpath" />
+	</target>
+	
+	<target name="test1" depends="prepare" description="ヘッダなし">
+		<xls2db
+			driver="${jdbc.driver}"
+			url="${jdbc.url}"
+			userid="${jdbc.userid}"
+			password="${jdbc.password}"
+			file="${data.dir}/data1.xls"
+			existsHeader="false"
+			truncate="false"
+			autocommit="false"
+			haltonerror="true"
+			classpathref="execute.classpath" />
+	</target>
+	
+	<target name="test2" depends="prepare" description="ヘッダあり">
+		<xls2db
+			driver="${jdbc.driver}"
+			url="${jdbc.url}"
+			userid="${jdbc.userid}"
+			password="${jdbc.password}"
+			file="${data.dir}/data2.xls"
+			existsHeader="true"
+			truncate="true"
+			autocommit="false"
+			haltonerror="true"
+			classpathref="execute.classpath" />
+	</target>
+
+	<target name="test3" depends="prepare" description="replace">
+		<xls2db
+			driver="${jdbc.driver}"
+			url="${jdbc.url}"
+			userid="${jdbc.userid}"
+			password="${jdbc.password}"
+			file="${data.dir}/data3.xls"
+			autocommit="false"
+			replace="true"
+			haltonerror="true"
+			classpathref="execute.classpath"/>
+	</target>
+	
+	<target name="test4" depends="prepare" description="haltonerrro = false">
+		<xls2db
+			driver="${jdbc.driver}"
+			url="${jdbc.url}"
+			userid="${jdbc.userid}"
+			password="${jdbc.password}"
+			file="${data.dir}/data4.xls"
+			autocommit="false"
+			haltonerror="false"
+			replace="false"
+			classpathref="execute.classpath" />
+	</target>
+	
+	<target name="test5" depends="prepare" description="複数シート">
+		<xls2db
+			driver="${jdbc.driver}"
+			url="${jdbc.url}"
+			userid="${jdbc.userid}"
+			password="${jdbc.password}"
+			file="${data.dir}/data4.xls"
+			truncate="true"
+			haltonerror="true"
+			classpathref="execute.classpath" />
+	</target>
+	
+	<target name="test6" depends="prepare" description="複数ファイル">
+		<xls2db
+			driver="${jdbc.driver}"
+			url="${jdbc.url}"
+			userid="${jdbc.userid}"
+			password="${jdbc.password}"
+			truncate="true"
+			haltonerror="true"
+			classpathref="execute.classpath">
+		
+			<fileset dir="${data.dir}">
+			    <include name="*.xls"/>
+				<exclude name="data2.xls"/>
+				<exclude name="data6.xls"/>
+			</fileset>
+		</xls2db>
+	</target>
+	
+	<target name="test7" depends="prepare" description="null設定">
+		<xls2db
+			driver="${jdbc.driver}"
+			url="${jdbc.url}"
+			userid="${jdbc.userid}"
+			password="${jdbc.password}"
+			file="${data.dir}/data5.xls"
+			nullstring=""
+			haltonerror="true"
+			classpathref="execute.classpath" />
+	</target>
+		
+	<target name="test8" depends="prepare" description="not nullカラムに空白セル">
+		<xls2db
+			driver="${jdbc.driver}"
+			url="${jdbc.url}"
+			userid="${jdbc.userid}"
+			password="${jdbc.password}"
+			file="${data.dir}/data6.xls"
+			nullstring="-"
+			haltonerror="true"
+			classpathref="execute.classpath" />
+	</target>
+	
+	<target name="test9" depends="prepare" description="シート名限定">
+		<xls2db
+			driver="${jdbc.driver}"
+			url="${jdbc.url}"
+			userid="${jdbc.userid}"
+			password="${jdbc.password}"
+			file="${data.dir}/data4.xls"
+			truncate="true"
+			match="/^p.+/"
+			haltonerror="true"
+			classpathref="execute.classpath" />
+	</target>
+	
+	<target name="test10" depends="prepare" description="数値セル、空白セル">
+		<xls2db
+			driver="${jdbc.driver}"
+			url="${jdbc.url}"
+			userid="${jdbc.userid}"
+			password="${jdbc.password}"
+			file="${data.dir}/data7.xls"
+			nullstring="-"
+			haltonerror="true"
+			classpathref="execute.classpath" />
+	</target>
+</project>

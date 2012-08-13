@@ -1,0 +1,4 @@
+#foreach ($i in [1001..2000])
+#set ($name = "xxx" + $i)
+insert into SAMPLE_TAB1 values ($i, '$name');
+#end

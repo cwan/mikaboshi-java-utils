@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+	db2csvカスタムタスクのサンプル
+-->
+	
+<project default="test1" basedir="../">
+
+	<path id="execute.classpath">
+		<fileset dir="${basedir}/lib">
+			<include name="*.jar" />
+		</fileset>
+		<pathelement path="${basedir}/conf" />
+	</path>
+
+	<taskdef resource="net/mikaboshi/ant/tasks.properties"
+		classpathref="execute.classpath" />
+	
+	<property file="${basedir}/conf/jdbc.properties" />
+	<property name="data.dir" value="${basedir}/ant/data" />
+	<property name="output.dir" value="${basedir}/ant/output/db2csv" />
+	
+	<target name="prepare"
+		description="テストデータを準備する">
+		
+		<dml
+			file="${data.dir}/prepare_test_table.sql"
+			driver="${jdbc.driver}"
+			url="${jdbc.url}"
+			userid="${jdbc.userid}"
+			password="${jdbc.password}"
+			haltonerror="false"
+			classpathref="execute.classpath" />
+	</target>
+	
+	<target name="test1" depends="prepare"
+		 description="パターン指定なし">
+		
+		<delete dir="${output.dir}/test1"/>
+		
+		<db2csv
+			outputDir="${output.dir}/test1"
+			driver="${jdbc.driver}"
+			url="${jdbc.url}"
+			userid="${jdbc.userid}"
+			password="${jdbc.password}"
+			header="false"
+			classpathref="execute.classpath"
+			haltOnError="false"
+			schema="PUBLIC"/>
+	</target>
+
+	<target name="test2" depends="prepare"
+		 description="パターン指定あり">
+		
+		<delete dir="${output.dir}/test2"/>
+		
+		<db2csv
+			outputDir="${output.dir}/test2"
+			driver="${jdbc.driver}"
+			url="${jdbc.url}"
+			userid="${jdbc.userid}"
+			password="${jdbc.password}"
+			header="false"
+			classpathref="execute.classpath"
+			haltOnError="false"
+			pattern="^H"/>
+	</target>
+</project>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+	csv2xlsカスタムタスクのサンプル
+-->
+	
+<project default="test1" basedir="../">
+
+	<path id="execute.classpath">
+		<fileset dir="${basedir}/lib">
+			<include name="*.jar" />
+		</fileset>
+		<pathelement path="${basedir}/conf" />
+	</path>
+
+	<taskdef resource="net/mikaboshi/ant/tasks.properties"
+		classpathref="execute.classpath" />
+	
+	<property file="${basedir}/conf/jdbc.properties" />
+	<property name="data.dir" value="${basedir}/ant/data" />
+	<property name="output.dir" value="${basedir}/ant/output" />
+		
+	<target name="prepare"
+		description="テストデータを準備する">
+		
+		<delete>
+			<fileset dir="${output.dir}">
+				<include name="Sql2Xls*"/>
+			</fileset>
+		</delete>
+		
+		<dml
+			file="${data.dir}/prepare_test_table.sql"
+			driver="${jdbc.driver}"
+			url="${jdbc.url}"
+			userid="${jdbc.userid}"
+			password="${jdbc.password}"
+			haltonerror="false"
+			classpathref="execute.classpath" />
+	</target>
+	
+	<target name="test1" depends="prepare"
+		description="sheetNameなし、appendなし">
+		
+		<sql2xls
+			output="${output.dir}/Sql2XlsTaskTest1.xls"
+			driver="${jdbc.driver}"
+			url="${jdbc.url}"
+			userid="${jdbc.userid}"
+			password="${jdbc.password}"
+			header="true"
+			classpathref="execute.classpath">
+			
+			<![CDATA[
+				select id as "ＩＤ", name as "名前"
+				from hoge order by id desc ;
+			]]>
+		</sql2xls>
+	</target>
+	
+	<target name="test2" depends="prepare"
+		description="sheetNameあり, appendあり">
+		
+		<sql2xls
+			output="${output.dir}/Sql2XlsTaskTest2.xls"
+			driver="${jdbc.driver}"
+			url="${jdbc.url}"
+			userid="${jdbc.userid}"
+			password="${jdbc.password}"
+			header="false"
+			sheetname="テスト②"
+			append="true"
+			classpathref="execute.classpath">
+			
+			<![CDATA[
+				select id as "ＩＤ", name as "名前"
+				from hoge order by id asc ;
+			]]>
+		</sql2xls>
+	</target>
+</project>

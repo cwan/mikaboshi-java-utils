@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+	csv2dbカスタムタスクのサンプル
+-->
+
+<project default="test1" basedir="../">
+
+	<path id="execute.classpath">
+		<fileset dir="${basedir}/lib">
+			<include name="*.jar" />
+		</fileset>
+		<pathelement path="${basedir}/conf" />
+	</path>
+
+	<taskdef resource="net/mikaboshi/ant/tasks.properties"
+		classpathref="execute.classpath" />
+	
+	<property file="${basedir}/conf/jdbc.properties" />
+	
+	<property name="data.dir" value="${basedir}/ant/data" />
+	
+	<target name="prepare"
+			description="テストデータを準備する">
+		<dml
+			file="${data.dir}/prepare_test_table.sql"
+			driver="${jdbc.driver}"
+			url="${jdbc.url}"
+			userid="${jdbc.userid}"
+			password="${jdbc.password}"
+			haltonerror="true"
+			classpathref="execute.classpath" />
+	</target>
+	
+	<target name="test1" depends="prepare"
+			description="ヘッダなし、truncateなし">
+		
+		<csv2db
+			driver="${jdbc.driver}"
+			url="${jdbc.url}"
+			userid="${jdbc.userid}"
+			password="${jdbc.password}"
+			file="${data.dir}/data1.csv"
+			charset="MS932"
+			tableName="HOGE"
+			existsHeader="false"
+			truncate="false"
+			autocommit="false"
+			haltonerror="true"
+			classpathref="execute.classpath" />
+	</target>
+	
+	<target name="test2" depends="prepare"
+			description="ヘッダあり、truncateあり">
+		
+		<csv2db
+			driver="${jdbc.driver}"
+			url="${jdbc.url}"
+			userid="${jdbc.userid}"
+			password="${jdbc.password}"
+			file="${data.dir}/data2.csv"
+			tableName="HOGE"
+			existsHeader="true"
+			truncate="true"
+			autocommit="false"
+			haltonerror="true"
+			classpathref="execute.classpath" />
+	</target>
+
+	<target name="test3" depends="prepare"
+			description="replaceあり">
+		<csv2db
+			driver="${jdbc.driver}"
+			url="${jdbc.url}"
+			userid="${jdbc.userid}"
+			password="${jdbc.password}"
+			file="${data.dir}/data3.csv"
+			tableName="HOGE"
+			autocommit="false"
+			replace="true"
+			haltonerror="true"
+			classpathref="execute.classpath"/>
+	</target>
+	
+	<target name="test4" depends="prepare"
+			description="エラーあり（PKの重複）、中断しない">
+		
+		<csv2db
+			driver="${jdbc.driver}"
+			url="${jdbc.url}"
+			userid="${jdbc.userid}"
+			password="${jdbc.password}"
+			file="${data.dir}/data4.csv"
+			tableName="HOGE"
+			autocommit="false"
+			haltonerror="false"
+			replace="false"
+			classpathref="execute.classpath" />
+	</target>
+	
+	<target name="test5" depends="prepare"
+			description="dir指定">
+		
+		<csv2db
+			driver="${jdbc.driver}"
+			url="${jdbc.url}"
+			userid="${jdbc.userid}"
+			password="${jdbc.password}"
+			dir="${data.dir}"
+			autocommit="false"
+			haltonerror="true"
+			replace="false"
+			classpathref="execute.classpath" />
+	</target>
+</project>
