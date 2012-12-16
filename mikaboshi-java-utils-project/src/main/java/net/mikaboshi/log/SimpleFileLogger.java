@@ -95,6 +95,8 @@ public class SimpleFileLogger {
 				close();
 			}
 		});
+
+		this.lastRotateCheckTime = System.currentTimeMillis();
 	}
 
 	/**
@@ -199,6 +201,7 @@ public class SimpleFileLogger {
 
 
 		if (!this.logFile.isFile() || this.logFile.length() < this.rotetaSize) {
+			this.lastRotateCheckTime = System.currentTimeMillis();
 			return;
 		}
 
@@ -207,8 +210,6 @@ public class SimpleFileLogger {
 		move(this.logFile.getAbsolutePath(), this.logFile, 1);
 
 		open();
-
-		this.lastRotateCheckTime = System.currentTimeMillis();
 	}
 
 	/**
