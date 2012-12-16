@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-	db2csvカスタムタスクのサンプル
+	sql2csvカスタムタスクのサンプル
 -->
 	
 <project default="test1" basedir="../">
 
 	<path id="execute.classpath">
-		<fileset dir="${basedir}/lib">
+		<fileset dir="../lib">
 			<include name="*.jar" />
 		</fileset>
 		<pathelement path="${basedir}/conf" />
@@ -18,10 +18,16 @@
 	
 	<property file="${basedir}/conf/jdbc.properties" />
 	<property name="data.dir" value="${basedir}/ant/data" />
-	<property name="output.dir" value="${basedir}/ant/output/db2csv" />
+	<property name="output.dir" value="${basedir}/ant/output" />
 	
 	<target name="prepare"
 		description="テストデータを準備する">
+		
+		<delete>
+			<fileset dir="${output.dir}">
+				<include name="Sql2Csv*"/>
+			</fileset>
+		</delete>
 		
 		<dml
 			file="${data.dir}/prepare_test_table.sql"
@@ -34,36 +40,43 @@
 	</target>
 	
 	<target name="test1" depends="prepare"
-		 description="パターン指定なし">
+		 description="ヘッダなし">
 		
-		<delete dir="${output.dir}/test1"/>
-		
-		<db2csv
-			outputDir="${output.dir}/test1"
+		<sql2csv
+			output="${output.dir}/Sql2CsvTaskTest1.csv"
 			driver="${jdbc.driver}"
 			url="${jdbc.url}"
 			userid="${jdbc.userid}"
 			password="${jdbc.password}"
 			header="false"
-			classpathref="execute.classpath"
-			haltOnError="false"
-			schema="PUBLIC"/>
+			classpathref="execute.classpath">
+			
+			<![CDATA[
+				select id as "ＩＤ", name as "名前"
+				from hoge order by id desc ;
+			]]>
+		</sql2csv>
 	</target>
-
+	
 	<target name="test2" depends="prepare"
-		 description="パターン指定あり">
+			description="null文字列指、ヘッダあり、CSVStrategy指定">
 		
-		<delete dir="${output.dir}/test2"/>
-		
-		<db2csv
-			outputDir="${output.dir}/test2"
+		<sql2csv
+			output="${output.dir}/Sql2CsvTaskTest2.csv"
 			driver="${jdbc.driver}"
 			url="${jdbc.url}"
 			userid="${jdbc.userid}"
 			password="${jdbc.password}"
-			header="false"
-			classpathref="execute.classpath"
-			haltOnError="false"
-			pattern="^H"/>
+			header="true"
+			nullstring="NULL"
+			csvstrategy="net.mikaboshi.csv.StandardCSVStrategy"
+			classpathref="execute.classpath">
+				
+			<![CDATA[
+				select id as "ＩＤ", name as "名前", null as "ぬる"
+				from hoge order by id desc ;
+			]]>
+		</sql2csv>
 	</target>
+	
 </project>

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-	sql2csvカスタムタスクのサンプル
+	csv2xlsカスタムタスクのサンプル
 -->
 	
 <project default="test1" basedir="../">
 
 	<path id="execute.classpath">
-		<fileset dir="${basedir}/lib">
+		<fileset dir="../lib">
 			<include name="*.jar" />
 		</fileset>
 		<pathelement path="${basedir}/conf" />
@@ -19,13 +19,13 @@
 	<property file="${basedir}/conf/jdbc.properties" />
 	<property name="data.dir" value="${basedir}/ant/data" />
 	<property name="output.dir" value="${basedir}/ant/output" />
-	
+		
 	<target name="prepare"
 		description="テストデータを準備する">
 		
 		<delete>
 			<fileset dir="${output.dir}">
-				<include name="Sql2Csv*"/>
+				<include name="Sql2Xls*"/>
 			</fileset>
 		</delete>
 		
@@ -40,43 +40,42 @@
 	</target>
 	
 	<target name="test1" depends="prepare"
-		 description="ヘッダなし">
+		description="sheetNameなし、appendなし">
 		
-		<sql2csv
-			output="${output.dir}/Sql2CsvTaskTest1.csv"
+		<sql2xls
+			output="${output.dir}/Sql2XlsTaskTest1.xls"
 			driver="${jdbc.driver}"
 			url="${jdbc.url}"
 			userid="${jdbc.userid}"
 			password="${jdbc.password}"
-			header="false"
+			header="true"
 			classpathref="execute.classpath">
 			
 			<![CDATA[
 				select id as "ＩＤ", name as "名前"
 				from hoge order by id desc ;
 			]]>
-		</sql2csv>
+		</sql2xls>
 	</target>
 	
 	<target name="test2" depends="prepare"
-			description="null文字列指、ヘッダあり、CSVStrategy指定">
+		description="sheetNameあり, appendあり">
 		
-		<sql2csv
-			output="${output.dir}/Sql2CsvTaskTest2.csv"
+		<sql2xls
+			output="${output.dir}/Sql2XlsTaskTest2.xls"
 			driver="${jdbc.driver}"
 			url="${jdbc.url}"
 			userid="${jdbc.userid}"
 			password="${jdbc.password}"
-			header="true"
-			nullstring="NULL"
-			csvstrategy="net.mikaboshi.csv.StandardCSVStrategy"
+			header="false"
+			sheetname="テスト②"
+			append="true"
 			classpathref="execute.classpath">
-				
+			
 			<![CDATA[
-				select id as "ＩＤ", name as "名前", null as "ぬる"
-				from hoge order by id desc ;
+				select id as "ＩＤ", name as "名前"
+				from hoge order by id asc ;
 			]]>
-		</sql2csv>
+		</sql2xls>
 	</target>
-	
 </project>

@@ -9,7 +9,7 @@
 	<property name="output.dir" value="${basedir}/ant/output/java_api_list" />
 
 	<path id="execute.classpath">
-		<fileset dir="${basedir}/lib">
+		<fileset dir="../lib">
 			<include name="*.jar" />
 		</fileset>
 		<pathelement path="${basedir}/conf" />

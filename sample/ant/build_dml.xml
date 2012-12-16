@@ -7,7 +7,7 @@
 <project default="test1" basedir="../">
 
 	<path id="execute.classpath">
-		<fileset dir="${basedir}/lib">
+		<fileset dir="../lib">
 			<include name="*.jar" />
 		</fileset>
 		<pathelement path="${basedir}/conf" />

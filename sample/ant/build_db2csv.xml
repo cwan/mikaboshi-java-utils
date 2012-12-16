@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-	csv2xlsカスタムタスクのサンプル
+	db2csvカスタムタスクのサンプル
 -->
 	
 <project default="test1" basedir="../">
 
 	<path id="execute.classpath">
-		<fileset dir="${basedir}/lib">
+		<fileset dir="../lib">
 			<include name="*.jar" />
 		</fileset>
 		<pathelement path="${basedir}/conf" />
@@ -18,16 +18,10 @@
 	
 	<property file="${basedir}/conf/jdbc.properties" />
 	<property name="data.dir" value="${basedir}/ant/data" />
-	<property name="output.dir" value="${basedir}/ant/output" />
-		
+	<property name="output.dir" value="${basedir}/ant/output/db2csv" />
+	
 	<target name="prepare"
 		description="テストデータを準備する">
-		
-		<delete>
-			<fileset dir="${output.dir}">
-				<include name="Sql2Xls*"/>
-			</fileset>
-		</delete>
 		
 		<dml
 			file="${data.dir}/prepare_test_table.sql"
@@ -40,42 +34,36 @@
 	</target>
 	
 	<target name="test1" depends="prepare"
-		description="sheetNameなし、appendなし">
+		 description="パターン指定なし">
 		
-		<sql2xls
-			output="${output.dir}/Sql2XlsTaskTest1.xls"
-			driver="${jdbc.driver}"
-			url="${jdbc.url}"
-			userid="${jdbc.userid}"
-			password="${jdbc.password}"
-			header="true"
-			classpathref="execute.classpath">
-			
-			<![CDATA[
-				select id as "ＩＤ", name as "名前"
-				from hoge order by id desc ;
-			]]>
-		</sql2xls>
-	</target>
-	
-	<target name="test2" depends="prepare"
-		description="sheetNameあり, appendあり">
+		<delete dir="${output.dir}/test1"/>
 		
-		<sql2xls
-			output="${output.dir}/Sql2XlsTaskTest2.xls"
+		<db2csv
+			outputDir="${output.dir}/test1"
 			driver="${jdbc.driver}"
 			url="${jdbc.url}"
 			userid="${jdbc.userid}"
 			password="${jdbc.password}"
 			header="false"
-			sheetname="テスト②"
-			append="true"
-			classpathref="execute.classpath">
-			
-			<![CDATA[
-				select id as "ＩＤ", name as "名前"
-				from hoge order by id asc ;
-			]]>
-		</sql2xls>
+			classpathref="execute.classpath"
+			haltOnError="false"
+			schema="PUBLIC"/>
+	</target>
+
+	<target name="test2" depends="prepare"
+		 description="パターン指定あり">
+		
+		<delete dir="${output.dir}/test2"/>
+		
+		<db2csv
+			outputDir="${output.dir}/test2"
+			driver="${jdbc.driver}"
+			url="${jdbc.url}"
+			userid="${jdbc.userid}"
+			password="${jdbc.password}"
+			header="false"
+			classpathref="execute.classpath"
+			haltOnError="false"
+			pattern="^H"/>
 	</target>
 </project>
