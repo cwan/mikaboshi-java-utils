@@ -3,3 +3,5 @@ encoding//src/main/java=UTF-8
 encoding//src/main/resources=UTF-8
 encoding//src/test/java=UTF-8
 encoding//src/test/resources=UTF-8
+encoding//src/test/resources/net/mikaboshi/io/RandomAccessFileInputStreamTest_UTF-8.txt=UTF-8
+encoding//src/test/resources/net/mikaboshi/io/RandomAccessFileInputStreamTest_Windows-31J.txt=MS932
