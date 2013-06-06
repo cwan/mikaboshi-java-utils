@@ -35,6 +35,8 @@ public class SimpleFileLogger {
 
 	private final int bufferSize;
 
+	private volatile boolean closeOnShutdown = true;
+
 	/**
 	 * ログ出力の各プロパティを指定する。
 	 * バッファサイズはデフォルトを適用する。
@@ -68,6 +70,17 @@ public class SimpleFileLogger {
 		open();
 	}
 
+	/**
+	 * ShutdownHockでcloseを実行するかどうかを設定する。
+	 * デフォルトはtrueで、closeする。
+	 * falseにセットした場合、外部のShutdownHockでcloseを実行しないと、バッファがflushされない場合がある。
+	 *
+	 * @param closeOnShutdown
+	 */
+	public void setCloseOnShutdown(boolean closeOnShutdown) {
+		this.closeOnShutdown = closeOnShutdown;
+	}
+
 	private void open() throws IOException {
 
 		try {
@@ -92,7 +105,9 @@ public class SimpleFileLogger {
 		// シャットダウン時にファイルを閉じる
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			public void run() {
-				close();
+				if (closeOnShutdown) {
+					close();
+				}
 			}
 		});
 
