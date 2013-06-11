@@ -16,6 +16,7 @@ import java.io.PrintWriter;
  * このクラスはログ出力先について同期を保証する。
  *
  * @author Takuma Umezawa
+ * @version 1.1.9
  */
 public class SimpleFileLogger {
 
@@ -81,6 +82,9 @@ public class SimpleFileLogger {
 		this.closeOnShutdown = closeOnShutdown;
 	}
 
+	protected void afterOpen() {
+	}
+
 	private void open() throws IOException {
 
 		try {
@@ -112,6 +116,8 @@ public class SimpleFileLogger {
 		});
 
 		this.lastRotateCheckTime = System.currentTimeMillis();
+
+		afterOpen();
 	}
 
 	/**
